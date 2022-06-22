@@ -7,11 +7,10 @@
 //
 
 import UIKit
-import CoreData
 import RealmSwift
 
 class CategoryViewController: UITableViewController {
-    var categoryArray = [Category]()
+    var categories: Results<Category>?
     let realm = try! Realm()
     
     override func viewDidLoad() {
@@ -29,8 +28,6 @@ class CategoryViewController: UITableViewController {
         let action = UIAlertAction(title: "Add Category", style: .default) { action in
             let newCategory = Category()
             newCategory.name = textField.text!
-            
-            self.categoryArray.append(newCategory)
             self.save(category: newCategory)
         }
         
@@ -49,14 +46,12 @@ class CategoryViewController: UITableViewController {
     // MARK: - TableView Datasource Methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return categoryArray.count
+        return categories?.count ?? 1
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let category = categoryArray[indexPath.row]
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
-        cell.textLabel?.text = category.name
+        cell.textLabel?.text = categories?[indexPath.row].name ?? "No categories added yet"
         return cell
     }
 
@@ -70,21 +65,15 @@ class CategoryViewController: UITableViewController {
         let destinationVC = segue.destination as! TodoListViewController
         
         if let indexPath = tableView.indexPathForSelectedRow {
-            let category = categoryArray[indexPath.row]
-            destinationVC.selectedCategory = category
+            destinationVC.selectedCategory = categories?[indexPath.row]
         }
     }
     
     
     // MARK: - Data Manipulation Methods
     func loadCategories() {
-//        let request: NSFetchRequest<Category> = Category.fetchRequest()
-//        
-//        do {
-//            categoryArray = try context.fetch(request)
-//        } catch {
-//            print("Error fetching data from context >> \(error)")
-//        }
+        categories = realm.objects(Category.self)
+        tableView.reloadData()
     }
     
     func save(category: Category) {
