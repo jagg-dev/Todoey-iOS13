@@ -58,8 +58,8 @@ class TodoListViewController: UITableViewController {
             }
         }
         
+        tableView.deselectRow(at: indexPath, animated: true)
         tableView.reloadData()
-//        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     // MARK: - Add New Items
@@ -95,13 +95,7 @@ class TodoListViewController: UITableViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    // MARK: - Data Manipulation Methods
-    func saveItems() {
-        
-        
-        tableView.reloadData()
-    }
-    
+    // MARK: - Data Manipulation Methods    
     func loadItems() {
         todoItems = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
         tableView.reloadData()
