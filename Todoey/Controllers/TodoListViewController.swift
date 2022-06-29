@@ -9,7 +9,7 @@
 import UIKit
 import RealmSwift
 
-class TodoListViewController: UITableViewController {
+class TodoListViewController: SwipeTableViewController {
     let realm = try! Realm()
     var todoItems: Results<Item>?
     var selectedCategory: Category? {
@@ -26,13 +26,14 @@ class TodoListViewController: UITableViewController {
         // searchBar.delegate = self (Added using UI in ViewController
     }
 
+    
     // MARK: - TableView Datasource Methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return todoItems?.count ?? 1
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         if let item = todoItems?[indexPath.row] {
             cell.textLabel?.text = item.title
@@ -44,6 +45,7 @@ class TodoListViewController: UITableViewController {
         
         return cell
     }
+    
     
     // MARK: - TableView Delegate Methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -61,6 +63,7 @@ class TodoListViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         tableView.reloadData()
     }
+    
     
     // MARK: - Add New Items
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
@@ -100,7 +103,18 @@ class TodoListViewController: UITableViewController {
         todoItems = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
         tableView.reloadData()
     }
+    
+    
+    // MARK: - Delete Data From Swipe
+    override func updateModel(at: IndexPath) {
+        if let itemToDelete = self.todoItems?[at.row] {
+            try! self.realm.write({
+                self.realm.delete(itemToDelete)
+            })
+        }
+    }
 }
+
 
 // MARK: - SearchBar Extension
 extension TodoListViewController: UISearchBarDelegate {
