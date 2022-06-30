@@ -22,6 +22,16 @@ class CategoryViewController: SwipeTableViewController {
         tableView.separatorStyle = .none
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        guard let navBar = navigationController?.navigationBar else { fatalError("Navigation controller does not exist.") }
+        
+        let appearance = navBar.standardAppearance
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+        appearance.backgroundColor = UIColor(hexString: "5856D6")
+        navBar.standardAppearance = appearance;
+        navBar.scrollEdgeAppearance = navBar.standardAppearance
+    }
+    
     
     // MARK: - Add new categories
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
@@ -69,6 +79,7 @@ class CategoryViewController: SwipeTableViewController {
     // MARK: - TableView Delegate Methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: "goToItems", sender: self)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

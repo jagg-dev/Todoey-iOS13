@@ -11,6 +11,8 @@ import RealmSwift
 import ChameleonFramework
 
 class TodoListViewController: SwipeTableViewController {
+    @IBOutlet weak var searchBar: UISearchBar!
+    
     let realm = try! Realm()
     var todoItems: Results<Item>?
     var selectedCategory: Category? {
@@ -27,6 +29,29 @@ class TodoListViewController: SwipeTableViewController {
         // searchBar.delegate = self (Added using UI in ViewController
         
         tableView.separatorStyle = .none
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if let colorHex = selectedCategory?.backgroundColor {
+            
+            title = selectedCategory!.name
+            
+            guard let navBar = navigationController?.navigationBar else { fatalError("Navigation controller does not exist.") }
+            
+            let contrastColor = ContrastColorOf(backgroundColor: UIColor(hexString: colorHex), returnFlat: true)
+            
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = UIColor(hexString: colorHex)
+            appearance.largeTitleTextAttributes = [.foregroundColor: contrastColor]
+            navBar.tintColor = contrastColor
+            navBar.standardAppearance = appearance;
+            navBar.scrollEdgeAppearance = navBar.standardAppearance
+            
+            searchBar.barTintColor = UIColor(hexString: colorHex)
+        }
     }
 
     
