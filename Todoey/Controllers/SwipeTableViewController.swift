@@ -16,12 +16,14 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
         tableView.rowHeight = 80.0
     }
 
+    
     // MARK: - TableView Datasource Methods
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! SwipeTableViewCell
         cell.delegate = self
         return cell
     }
+    
     
     // MARK: - Swipe Cell Delegate methods
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
